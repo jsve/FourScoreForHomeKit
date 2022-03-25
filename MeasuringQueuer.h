@@ -1,6 +1,7 @@
 /*
- * Measures some value (averaged) and updates that to HomeKit. Each device implements its own
- * updateHomeKitStatus and interpretGpioReading however meningful to them.
+ * The Queuer stands in line at the QueueMaster. When triggered, a MeasuringQueuer also
+ * measures some value (averaged) and publishes it to its subscribers. Each subscriber
+ * deals with this new value and uses it to, for instance, update HomeKit.
  */
 #ifndef MEASURING_QUEUER_H
 #define MEASURING_QUEUER_H
@@ -30,11 +31,6 @@ struct MeasuringQueuer : Queuer {
     this->gpioPin = gpioPin;
     this->readingVariance = READING_VARIANCE;
     this->interferenceReading = INTERFERENCE_READING;
-
-    // initialize all the readings for averaging to 0:
-    // for (int thisReading = 0; thisReading < nbrOfReadingsForAverage; thisReading++) {
-    //   readings[thisReading] = 0;
-    // }
 	}
 
   int getAveragePinReading() {
@@ -48,7 +44,7 @@ struct MeasuringQueuer : Queuer {
       this->readIndex = 0;
 
       int average = this->totalOfCurrentReadings / nbrOfReadingsForAverage;
-      this->totalOfCurrentReadings = 0; // after calculating average, this can also be reset.
+      this->totalOfCurrentReadings = 0;
       
       return average;
     }
@@ -56,15 +52,13 @@ struct MeasuringQueuer : Queuer {
   }
 
   bool shouldPublishToSubscribers(int newValue) {
-    if (
+    if ( // no meaningful change
         this->lastPublishedValue > newValue - readingVariance &&
         this->lastPublishedValue < newValue + readingVariance
       ) {
-        // NOTE: this might be a good place to stabilize irradic results. i.e. if same value is measured twice (or N times) - update
+        // NOTE: this might be a good place to stabilize erratic results. i.e. if same value is measured twice (or N times) - update
         // to HomeKit. In that case, we probably don't want to save the last calculated average,
         // but instead the value from the config-arrays.
-
-        // port not changed. waiting...
         return false;
       }
       return true;
@@ -75,10 +69,10 @@ struct MeasuringQueuer : Queuer {
       return;
     };
 
-    /* the value returned by analogRead() will fluctuate based on a number
-      * of factors (e.g. the values of the other analog inputs, how close
-      * your hand is to the board, etc.). Averiging is nessesary
-      */
+    /* the value returned by the native analogRead() will fluctuate based on a number
+     * of factors (e.g. the values of the other analog inputs, how close
+     * your hand is to the board, etc.). Averaging through getAveragePinReading() is necessary
+     */
     int measuredAverage = getAveragePinReading();
     if (measuredAverage > -1) {
       LOG2("raw average measured by device on pin "); LOG2(this->gpioPin); LOG2(": "); LOG2(measuredAverage); LOG2("\n");

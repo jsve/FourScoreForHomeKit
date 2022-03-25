@@ -1,11 +1,14 @@
 /*
- * A service that represents two buttons. Buttons are created in
- * pairs to be functional with the queueMaster and its two reader
- * positions.
- *
- * The service builds the button as an outlet, with a secondary outlet
- * created by the first. The primary outlet is responsible for looping
- * and updating the status of the secondary button.
+ * Buttons are configured to be both queuers to the QueueMaster and
+ * Subscribers to themselves. This is set up as the abstract Button.
+ * 
+ * The actual buttons inherit from this base class, but additionally
+ * inherit from StatefulSwitch to expose them to HomeKit (as outlets).
+ * 
+ * The 2/4 player switch is exposed as two buttons, but on the same Queuer.
+ * This is to make its state understandable in HomeKit but at the same time
+ * just use one readout to update both buttons (we don't want to accidentally)
+ * trigger both buttons at the same time, since that would make no sense.
  */
 
 #ifndef BUTTON_H
@@ -83,7 +86,7 @@ struct NbrOfPlayersSwitch : StatefulSwitch, Button {
     Button(gpioPin)
   { 
     new SpanAccessory();
-      new AccessoryInformationNonIdentifiable(secondaryButtonName, "Nontendo","123-ABC","FourScore","1.0");
+      new AccessoryInformationNonIdentifiable(secondaryButtonName);
       this->secondaryButton = new StatefulSwitch(secondaryButtonName);
 	}  
 
@@ -118,19 +121,18 @@ void buttonFactory(QueueMaster* qm) {
   LOG2("Creating buttons on pin "); LOG2(gpioPin); LOG2("\n");
   
   for (int i = 0; i < 4; i++) { // NOTE: 4 even though two/four player gets created as one button
-    if (i == 1) continue; // fourPlayerMode
+    if (i == 1) continue; // skip twoPlayerMode
     LOG1("Creating "); LOG1(buttonNames[i]); LOG1(" index: "); LOG1(i); LOG1("\n");
     Queuer* button;
+    new SpanAccessory();
+    new AccessoryInformationNonIdentifiable(buttonNames[i]);
+
     if (i > 0) { // i.e. not two/four player mode switch
-      new SpanAccessory();
-        new AccessoryInformationNonIdentifiable(buttonNames[i]);
         button = new TurboButton(
           gpioPin,
           buttonNames[i]
         );
     } else {
-    new SpanAccessory();
-      new AccessoryInformationNonIdentifiable(buttonNames[i]);
       button = new NbrOfPlayersSwitch(
         gpioPin,
         buttonNames[i],

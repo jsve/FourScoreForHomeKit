@@ -1,10 +1,13 @@
 /*
- * An instance of this can be part of the queue handled by the QueueMaster
+ * Anyone who implements Queuer can be part of the queue handled by the QueueMaster
  * The Queuer has one or more tasks that can be carried out when it is
- * their turn in the queue. This is initiated by the QueueMaster
+ * their turn in the queue. This is defined in the loop(); and is called by the
+ * QueueMaster when it's the Queuers turn.
  *
  * Extending classes must implement it's own tasks in loop(); These should not
- * be executed if finishedWithTasks is true;
+ * be executed if finishedWithTasks is true, which is set by the QueueMaster through
+ * reset() since there potentially can be two queuers on the same channel, and we don't
+ * want the first one to finish to restart its loop() before the second one has finished.
  */
 #ifndef QUEUER_H
 #define QUEUER_H

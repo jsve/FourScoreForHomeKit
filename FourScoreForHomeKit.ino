@@ -10,25 +10,26 @@ QueueMaster* qm;
 
 void setup() {
 
-  // setup for wifi:
+  const int logLevel = LOG_LEVEL;
+
+  // variables for wifi and HomeKit:
   const char* ssid = WIFI_SSID;
   const char* password = WIFI_PASS;
-  const int logLevel = LOG_LEVEL;
   const char* pairingCode = PAIRING_CODE;
 
-  // setup for queueMaster:
+  // variables for queueMaster:
   const int writeGpioPins[2] = ANALOGUE_WRITE_GPIO_PINS;
   const int sampleInterval = SAMPLE_INTERVAL;
   pinMode(writeGpioPins[0], OUTPUT);
   pinMode(writeGpioPins[1], OUTPUT);
 
-  // setup for FourScore device
+  // variables for FourScore device
   const bool useButtons = USE_BUTTONS;
 
   // start serial communication:
   Serial.begin(115200);
 
-  // homeSpan.enableAutoStartAP();
+  // homeSpan.enableAutoStartAP(); // TODO: allow this to be switched in the Config.h if credentials are unknown compile time.
   homeSpan.setLogLevel(logLevel);
   homeSpan.setWifiCredentials(ssid, password);
   homeSpan.setPairingCode(pairingCode);

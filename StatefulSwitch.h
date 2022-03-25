@@ -39,13 +39,11 @@ struct StatefulSwitch : Service::Outlet {
   }
 
   void turnOn() {
-    // LOG2("turning on "); LOG2(this->name); LOG2("\n");
     if (!isOn->getVal()) isOn->setVal(true);
     if (!isUsed->getVal()) isUsed->setVal(true);
   }
 
   void turnOff() {
-    // LOG2("turning off "); LOG2(this->name); LOG2("\n");
     if (isOn->getVal()) isOn->setVal(false);
     if (isUsed->getVal()) isUsed->setVal(false);
   }

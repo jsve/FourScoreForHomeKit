@@ -24,6 +24,7 @@
 // NOTE: button-names are configured directly in the buttonFactory()
 #define USE_BUTTONS true; // if buttons should be exposed to HomeKit
 #define ACCESSORY_MANUFACTURER "Nontendo"
+#define ACCESSORY_MODEL "FourScore Key Hanger"
 #define ACCESSORY_SERIAL_NUMBER "FCKH-001"
 #define ACCESSORY_VERSION "1.0"
 

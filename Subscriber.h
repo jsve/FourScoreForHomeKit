@@ -3,8 +3,9 @@
  * The subscriber will not have to implement it's own loop function,
  * but will instead get its onNewSubscribedValue executed when needed.
  *
- * onNewSubscribedValue needs to be overloaded for the type the Queuer
- * passes as parameter to the method
+ * The value sent to onNewSubscribedValue depends on which type of Queuer
+ * the subscriber is subscribed to. The subscriber needs to keep track of
+ * what the values mean themselves.
  */
 #ifndef SUBSCRIBER_H
 #define SUBSCRIBER_H

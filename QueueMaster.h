@@ -6,6 +6,9 @@
  * First 1x4 channels are 1YN on the multiplexer and second 1x4 channels
  * are 2YN. These are called queues below. This means there are 2 parallell
  * queues with 4 channels each.
+ * 
+ * The QueueMaster has Queuers on these queues and channels and runs their
+ * loops when it's their turn.
  */
 
 #ifndef QUEUEMASTER_H
@@ -79,7 +82,6 @@ struct QueueMaster {
   void resetQueuers() {
     for(int i = 0; i < 2; i++) {
       if (getCurrentChannelQueuer(i) == 0) continue;
-      // LOG2("Resetting for "); LOG2(currentChannel); LOG2(":"); LOG2(i); LOG2("\n");
       getCurrentChannelQueuer(i)->reset();
     }
   }
@@ -148,7 +150,8 @@ struct QueueMaster {
   }
 
   void setPinsForChannel(int channel) {
-    // NOTE: should be binary, i.e. 0,0 0,1 1,0 1,1 but something fishy is going on that is left as debt.
+    // NOTE: should be binary, i.e. 0,0 0,1 1,0 1,1 but something fishy is going on that
+    // is left unfixed.
     if (channel == -1) { // binary 0
       digitalWrite(outputGpioPins[0], LOW);
       digitalWrite(outputGpioPins[1], LOW);

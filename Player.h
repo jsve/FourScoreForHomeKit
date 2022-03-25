@@ -51,10 +51,8 @@ struct Player : Service::OccupancySensor, Subscriber {
       // NOTE: we don't create AccessoryInformation here, but HomeApp seems to pick it up from the OccupancySensor
       const char* portName = controllerPortNames[i];
       LOG1("Creating controller port: "); LOG1(portName); LOG1("\n");
-      // new SpanAccessory();
-      // new AccessoryInformationNonIdentifiable(portName, "Nontendo","123-ABC","FourScore","1.0");
       ControllerPort* cP = new ControllerPort(portName);
-      // addLink(cP); // ignore intellisense warning. compiles and works.
+      // addLink(cP); // doesn't seem necessary, but is described in the HomeSpan documentation.
       controllerPorts[i] = cP;
     }
 	}
@@ -85,7 +83,7 @@ struct Player : Service::OccupancySensor, Subscriber {
 
     LOG2("Updating controller statuses."); LOG2("\n");
     for (int i = 0; i < NUMBER_OF_CONTROLLER_PORTS; i++) {
-      ControllerPort* cP = controllerPorts[i]; // could also use vector<SpanService *> getLinks(), but not clear which is prefered.
+      ControllerPort* cP = controllerPorts[i]; // could also use vector<SpanService *> getLinks(), but not clear which is preferred.
       if (i == onPort) {
         cP->turnOn();
       } else {
