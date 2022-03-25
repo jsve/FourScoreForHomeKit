@@ -4,12 +4,15 @@
 Apparently this idea is [not new](https://www.reddit.com/r/gaming/comments/51hpdm/broken_nes_four_score_my_new_key_holder/). However, this project makes the key holder a bit more intelligent.
 
 Though the use of an ESP32 and [HomeSpan](https://github.com/HomeSpan/HomeSpan) the key hanger is connected to HomeKit. The device recognizes the state of all buttons on the device, and also which ports have something in them. "Something" in this case is one of six key chains.
+<br/>
+<br/>
 
 ## Technical details
 The ESP32 that where used has only 4 analogue inputs and to outputs that can be used simultaneously with the Wifi-module. This could probably be expanded with something like an I2C-device, but in this project it was sufficient to use a multiplexer (74HC4052).
 
 Through the multiplexer, the two outputs can be used to create 2x4 separate channels for the inputs to read. This means that each controller port and button can be iterated though and read independently.
-
+<br/>
+<br/>
 
 ### Schematic
 ![Schematic](doc/img/Schematic.png)
@@ -20,7 +23,8 @@ To save a little bit on resistors these are connected in series as shown in the 
 Each player is connected to the respective pin on the multiplexer.
 
 A similar approach, but much simpler is used for the buttons.
-
+<br/>
+<br/>
 ### Code
 Each physical device (controller port or button) is represented by a class. These don't use the `loop()` provided by HomeSpan, but instead their measuring loop is controlled by the `QueueMaster` class. The `QueueMaster` class is responsible for switching the channel on the multiplexer (by setting the output pins `LOW` or `HIGH`) and telling the instances in the queue when their channel is active.
 
@@ -33,24 +37,22 @@ For the players, the logic is more complex. Each controllerPort might have any o
 To distinguish between the two types of `ControllerPort` there is both a `ControllerPort` and a `MeasuringControllerPort`. The `MeasuringControllerPort` is the queuer and has a position in the queue corresponding to its port number. The `ControllerPort` represents the state of the physical port, but is published as sub-services to the `OccupancySensor`.
 
 All `Player`s are subscribers to the `MeasuringControllerPort`. When a `Player` (aka. key chain) is connected, removed or moved, the player updates the state of its `OccupancySensor` and the `ControllerPort`s accordingly.
+<br/>
+<br/>
 
 ## Hardware
-The goal of the project was to make the device smart, without changing the outside of the device at all. The only change needed was to drill two holes in the back of the device to be able to screw it into the mount.
+The PCB was modded as described [here](doc/PCB_MODS_AND_INFO.md). After the new components where soldered and connected, the inside of the device looked like this:
 
-Since the device is angled (30°) a mount was created to allow the device to hang straight on the wall. For this, a piece of oak was used.
+![finished top](doc/img/FinishedTop.jpeg)
+_Top view of the assembled device._
+<br/>
+<br/>
 
-<!-- ![FinishedBack](doc/img/FinishedBack.jpeg)
-_Back of device_ -->
+More information about assembling, components and soldering are available [here](doc/HARDWARE.md).
 
-![FinishedFront](doc/img/FinishedFront.jpeg)
-_Front of device_
+A mount was created to allow the device to hang straight on the wall. For this, a piece of oak was used:
 
-<!-- ![FinishedTop](doc/img/FinishedTop.jpeg)
-_Top of device_ -->
-
-![MountTowardsFourScore](doc/img/MountTowardsFourScore.jpeg)
-_Mount, side to fasten FourScore_
-![MountFromFourScore](doc/img/MountFromFourScore.jpeg)
-_FourScore with screws to connect to the stand. Note that the metal of the screws is completely hidden within the raisers in the plastic, and will be completely isolated when the device is closed back up._
-![MountTowardsWall](doc/img/MountTowardsWall.jpeg)
-_Mount, wall side. Two slots are routed out to allow for it to slide onto two screws in the wall. Plaster was used to stop the screw heads completely level with each other and the top of the device._
+![mount towards FourScore](doc/img/MountTowardsFourScore.jpeg)
+_The oak mount, shown at the side that will fasten to the FourScore_
+<br/>
+<br/>
