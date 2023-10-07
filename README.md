@@ -56,3 +56,15 @@ A mount was created to allow the device to hang straight on the wall. For this, 
 _The oak mount, shown at the side that will fasten to the FourScore_
 <br/>
 <br/>
+
+## Development
+
+Follow the installation instructions [here](https://github.com/HomeSpan/HomeSpan/blob/master/docs/GettingStarted.md) to get started with HomeSpan.
+
+Select your board in the board selector. You might need to install the ESP32 board manager first. The board I'm using works with `ESP32-WROOM-DA Module`.
+
+Set up the serial monitor with baud rate 115200.
+
+Create a copy of `ConfigExample.h` and rename it to `Config.h`. Fill in the required information.
+
+Use the upload command to send the code to the ESP32.

@@ -1,4 +1,4 @@
-/* This config sample is not read by the application. Save it as Config.h
+/* This config example is not read by the application. Save it as Config.h
  * and update values below as needed.
  */
 #ifndef CONFIG_H
@@ -26,7 +26,7 @@
 #define ACCESSORY_MANUFACTURER "Nontendo"
 #define ACCESSORY_MODEL "FourScore Key Hanger"
 #define ACCESSORY_SERIAL_NUMBER "FCKH-001"
-#define ACCESSORY_VERSION "1.0"
+#define ACCESSORY_VERSION "1.1"
 
 
 /*
@@ -47,6 +47,7 @@
 #define INTERFERENCE_READING 100; // the highest reading when channel in multiplex is closed. Needs to be above the lowest relevant reading since these are ignored.
 #define READING_VARIANCE 15; // different ports using different resistors might vary a little.
 
+// NOTE: These are known to drift over time. Enable logging and experiment with different values.
 #define GPIO_READINGS {3775, 3274, 2983, 2730, 2535, 2354}; // readings for "player" 1-6. for buttons [0] means not pressed and [1] is pressed.
 
 #endif
